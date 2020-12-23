@@ -1,0 +1,25 @@
+.cardTitle {
+    font-size: 30px;
+}
+
+.cardSubtitle {
+    font-size: 20px;
+}
+
+.cardText {
+    font-size: 20px
+}
+
+.mat-card-avatar {
+    width: 100px;
+    height: 100px;
+}
+.tweetImg {
+    width: 800px;
+    height: 450px;
+    background-size: cover;
+}
+
+mat-card {
+    box-shadow: none;
+}
