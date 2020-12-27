@@ -35,6 +35,8 @@ export class TwittercomponentComponent implements OnInit {
   tweet: any;
   currentIdx: any;
   handle: string;
+  resetHour: any;
+  resetMin: any;
   profileImg = 'https://pbs.twimg.com/profile_images/1338297924652961793/lzQgrXMA_400x400.jpg';
   constructor(private twtservice: TwitterserviceService, public dialog: MatDialog) { }
 
@@ -90,7 +92,7 @@ export class TwittercomponentComponent implements OnInit {
 
   updateTweets(response): void {
     console.log("response received");
-    this.tweets = response.data;
+    this.tweets = this.shuffleInPlace(response.data);
     this.selectTweet(0);
   }
 
@@ -102,8 +104,37 @@ export class TwittercomponentComponent implements OnInit {
     this.twtservice.getLeffs(this.handle);
   }
   
+  checkTime(): void {
+    let curr = new Date();
+    let currHour = curr.getHours();
+    let currMin = curr.getMinutes();
+    //console.log(typeof(currHour));
+    //console.log(currMin);
+    console.log("Checking time")
+    if (Number(currHour) == Number(5) && Number(currMin) == Number(5)) {
+      this.nextTweet();
+    }
+    else {
+      // //console.log("CurrHour is a " + typeof(currHour) + " with value " + currHour);
+      // //console.log("CurrMin is a " + typeof(currMin) + " with value " + currMin);
+      // console.log(Number(currHour) == Number(11));
+      // console.log(Number(currHour) - Number(10));
+      // console.log(Number(currHour) - Number(11));
+      // console.log(Number(this.resetHour));
+      // console.log(Number(this.resetHour - 2));
+      // console.log(Number(currHour) - Number(this.resetHour));
+
+    }
+
+  }
   
   ngOnInit(): void {
+    this.resetHour = 11;
+    this.resetMin = 9;
+    console.log("resetHour is a " + typeof(this.resetHour) + " with value " + this.resetHour);
+    console.log("resetMin is a " + typeof(this.resetMin) + " with value " + this.resetMin);
+    var self = this;
+    let id = setInterval(function() { self.checkTime(); }, 60000);
     this.handle = "DeepLeffen";
     this.twtservice.subObj.subscribe(
       values => {
@@ -118,6 +149,29 @@ export class TwittercomponentComponent implements OnInit {
       }
     );
     this.getLeffs();
+  }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  shuffleInPlace<T>(array: T[]): T[] {
+    // if it's 1 or 0 items, just return
+    if (array.length <= 1) return array;
+  
+    // For each index in array
+    for (let i = 0; i < array.length; i++) {
+  
+      // choose a random not-yet-placed item to place there
+      // must be an item AFTER the current item, because the stuff
+      // before has all already been placed
+      const randomChoiceIndex = this.getRandomInt(i, array.length - 1);
+  
+      // place our random choice in the spot by swapping
+      [array[i], array[randomChoiceIndex]] = [array[randomChoiceIndex], array[i]];
+    }
+  
+    return array;
   }
 
 }
