@@ -1,6 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TwitterserviceService } from '../twitterservice.service';
-import { MatCardModule } from '@angular/material/card';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+
+export interface DialogData {
+  handle: string;
+}
+
+@Component({
+  selector: 'settings-dialog',
+  templateUrl: 'settings-dialog.html'
+})
+export class SettingsDialog {
+  constructor(
+    public dialogRef: MatDialogRef<SettingsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+}
 
 @Component({
   selector: 'app-twittercomponent',
@@ -12,9 +34,22 @@ export class TwittercomponentComponent implements OnInit {
   tweets: any;
   tweet: any;
   currentIdx: any;
+  handle: string;
   profileImg = 'https://pbs.twimg.com/profile_images/1338297924652961793/lzQgrXMA_400x400.jpg';
-  constructor(private twtservice: TwitterserviceService) { }
+  constructor(private twtservice: TwitterserviceService, public dialog: MatDialog) { }
 
+  openDialog() {
+    const dialogRef = this.dialog.open(SettingsDialog,{
+      data: {handle: this.handle}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.handle = result;
+      this.getLeffs();
+    });
+
+  }
   sanitize(url) {
     return("aaa");
   }
@@ -54,6 +89,7 @@ export class TwittercomponentComponent implements OnInit {
   }
 
   updateTweets(response): void {
+    console.log("response received");
     this.tweets = response.data;
     this.selectTweet(0);
   }
@@ -63,11 +99,12 @@ export class TwittercomponentComponent implements OnInit {
   }
 
   getLeffs(): void {
-    this.twtservice.getLeffs();
+    this.twtservice.getLeffs(this.handle);
   }
   
   
   ngOnInit(): void {
+    this.handle = "DeepLeffen";
     this.twtservice.subObj.subscribe(
       values => {
         console.log('subscription updated');

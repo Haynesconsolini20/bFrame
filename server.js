@@ -42,7 +42,7 @@ app.get('/mentions_timeline', (req, res) => {
 });
 
 app.get('/leffen_timeline', (req, res) => {
-    const params = { tweet_mode: 'extended', count: 200, include_rts: false, exclude_replies: true, screen_name: 'DeepLeffen'};
+    const params = { tweet_mode: 'extended', count: 200, include_rts: false, exclude_replies: true, screen_name: req.query["handle"]};
    
     twitClient
       .get(`statuses/user_timeline`, params)

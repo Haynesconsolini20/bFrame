@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Choose twitter account</h2>
+<div mat-dialog-content class="mat-typography">
+    <h3>Enter twitter handle you want to see:</h3>
+    <mat-form-field>
+        <input matInput [(ngModel)]="data.handle">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data.handle" cdkFocusInitial>Confirm</button>
+</div>

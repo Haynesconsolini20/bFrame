@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -28,9 +28,10 @@ export class TwitterserviceService {
       );
   }
 
-  getLeffs() {
+  getLeffs(user)  {
+    let params = new HttpParams().set("handle",user);
     return this.http
-      .get(this.api_url+'/leffen_timeline').subscribe(
+      .get(this.api_url+'/leffen_timeline', {params: params}).subscribe(
         values => {
           console.log('response sent to component')
           this.subObj.next(values);
