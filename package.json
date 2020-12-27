@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "ngx-tweet": "^2.0.3",
     "rxjs": "~6.6.0",
+    "simple-keyboard": "^2.32.68",
     "tslib": "^2.0.0",
     "twit": "^2.2.11",
     "zone.js": "~0.10.2"

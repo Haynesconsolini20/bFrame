@@ -1,9 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TwitterserviceService } from '../twitterservice.service';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import Keyboard from "simple-keyboard";
 
 
 export interface DialogData {
@@ -12,16 +13,59 @@ export interface DialogData {
 
 @Component({
   selector: 'settings-dialog',
-  templateUrl: 'settings-dialog.html'
+  templateUrl: 'settings-dialog.html',
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: [
+    '../../../node_modules/simple-keyboard/build/css/index.css'
+  ]
 })
 export class SettingsDialog {
+  value ="";
+  keyboard: Keyboard;
   constructor(
+
     public dialogRef: MatDialogRef<SettingsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
     
     onNoClick(): void {
       this.dialogRef.close();
     }
+
+    onInputFocus() {
+      this.keyboard = new Keyboard({
+            onChange: input => this.onChange(input),
+            onKeyPress: button => this.onKeyPress(button)
+          });
+      }
+      
+        onChange = (input: string) => {
+          this.value = input;
+          this.data.handle = input;
+          console.log('Input changed', input);
+        };
+      
+        onKeyPress = (button: string) => {
+          console.log('Button pressed', button);
+      
+          /**
+           * If you want to handle the shift and caps lock buttons
+           */
+          if (button === '{shift}' || button === '{lock}') this.handleShift();
+        };
+      
+        onInputChange = (event: any) => {
+          this.keyboard.setInput(event.target.value);
+        }
+      
+        handleShift = () => {
+          let currentLayout = this.keyboard.options.layoutName;
+          let shiftToggle = currentLayout === "default" ? "shift" : "default";
+      
+          this.keyboard.setOptions({
+            layoutName: shiftToggle
+          });
+        };
+ 
 }
 
 @Component({
@@ -42,7 +86,11 @@ export class TwittercomponentComponent implements OnInit {
 
   openDialog() {
     const dialogRef = this.dialog.open(SettingsDialog,{
-      data: {handle: this.handle}
+      data: {handle: this.handle},
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
     });
 
     dialogRef.afterClosed().subscribe(result => {
